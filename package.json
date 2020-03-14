@@ -1,6 +1,6 @@
 {
-  "name": "@metamn/new-component",
-  "version": "0.2.0",
+  "name": "@ericpuskas/new-component",
+  "version": "0.2.1",
   "description": "CLI for creating new React components",
   "main": "src/index.js",
   "scripts": {
@@ -12,12 +12,13 @@
     "cli",
     "component"
   ],
-  "author": "Csongor Bartus",
+  "author": "Eric",
   "license": "MIT",
   "bin": {
     "new-component": "./src/index.js"
   },
   "dependencies": {
+    "@material-ui/core": "^4.9.5",
     "chalk": "2.1.0",
     "commander": "2.11.0",
     "prettier": "1.5.3"

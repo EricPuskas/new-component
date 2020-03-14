@@ -48,6 +48,8 @@ const templateStoryPath = "./templates/component.stories.js";
 const templateDocPath = "./templates/component.md";
 const templateTestPath = "./templates/component.test.js";
 const templateIndexPath = "./templates/index.js";
+const templateLangEnRo = "./templates/component.lang.en-ro.js";
+const templateStylesPath = "./templates/component.styles.js";
 
 // Target files
 const componentDir = `${program.dir}/${componentName}`;
@@ -56,6 +58,8 @@ const storyPath = `${componentDir}/${componentName}.stories.js`;
 const docPath = `${componentDir}/${componentName}.md`;
 const testPath = `${componentDir}/${componentName}.test.js`;
 const indexPath = `${componentDir}/index.js`;
+const langEnRoPath = `${componentDir}/${componentName}.lang.en-ro.js`;
+const stylesPath = `${componentDir}/${componentName}.styles.js`;
 
 // Logging ...
 logIntro({ name: componentName, dir: componentDir });
@@ -157,6 +161,34 @@ mkDirPromise(componentDir)
     logItemCompletion("Index created.");
     return template;
   })
+  .then(() => readFilePromiseRelative(templateLangEnRo))
+  .then(template =>
+    // Replace our placeholders with real data (so far, just the component name)
+    template.replace(/COMPONENT_NAME/g, componentName)
+  )
+  .then(template =>
+    // Format it using prettier, to ensure style consistency, and write to file.
+    writeFilePromise(langEnRoPath, prettify(template))
+  )
+  .then(template => {
+    logItemCompletion("Lang en-ro created.");
+    return template;
+  })
+
+  .then(() => readFilePromiseRelative(templateStylesPath))
+  .then(template =>
+    // Replace our placeholders with real data (so far, just the component name)
+    template.replace(/COMPONENT_NAME/g, componentName)
+  )
+  .then(template =>
+    // Format it using prettier, to ensure style consistency, and write to file.
+    writeFilePromise(stylesPath, prettify(template))
+  )
+  .then(template => {
+    logItemCompletion("Styles created.");
+    return template;
+  })
+
   .then(template => {
     logConclusion();
   })
