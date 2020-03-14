@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 /**
  * i18n Imports
  */
-import i18n from "../../i18n";
+import i18n from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { en_ro } from "./COMPONENT_NAME.lang.en-ro";
 
