@@ -8,8 +8,6 @@ import i18n from "../../../i18n";
 import { useTranslation } from "react-i18next";
 import { en_ro } from "./COMPONENT_NAME.lang.en-ro";
 
-i18n.addResourceBundle("en_ro", "COMPONENT_NAME", en_ro);
-
 /**
  *  Material UI Imports
  */
@@ -23,21 +21,35 @@ import { useStyles } from "./COMPONENT_NAME.styles";
 /**
  * Defines the prop types
  */
-const propTypes = {};
+const propTypes = {
+  componentName: PropTypes.string
+};
 
 /**
  * Defines the default props
  */
-const defaultProps = {};
+const defaultProps = {
+  componentName: "COMPONENT_NAME"
+};
 
 /**
  * Displays the component
  */
 const COMPONENT_NAME = props => {
-  const { COMPONENT_NAME } = useStyles();
+  const { componentName } = props;
+
+  /**
+   * Handles the translations
+   */
+  i18n.addResourceBundle("en_ro", "COMPONENT_NAME", en_ro);
   const { t } = useTranslation("COMPONENT_NAME");
 
-  return <Box className={COMPONENT_NAME}>{t("COMPONENT_NAME")}</Box>;
+  /**
+   * Gets the component styles
+   */
+  const classes = useStyles();
+
+  return <Box className={classes.COMPONENT_NAME}>{t(componentName)}</Box>;
 };
 
 COMPONENT_NAME.propTypes = propTypes;
