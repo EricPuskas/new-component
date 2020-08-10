@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 /**
  * Imports i18n
  */
-import i18n from "../../../i18n";
+import i18n from "../../i18n";
 import { useTranslation } from "react-i18next";
-import { en_ro } from "./COMPONENT_NAME.lang.en-ro";
+import { LANG_LANG } from "./COMPONENT_NAME.lang.LANG-LANG";
 
 /**
  * Imports the component styles
@@ -36,7 +36,7 @@ const COMPONENT_NAME = (props) => {
   /**
    * Handles the translations
    */
-  i18n.addResourceBundle("en_ro", "COMPONENT_NAME", en_ro);
+  i18n.addResourceBundle("lang_lang", "COMPONENT_NAME", LANG_LANG);
   const { t } = useTranslation("COMPONENT_NAME");
 
   /**
@@ -44,7 +44,7 @@ const COMPONENT_NAME = (props) => {
    */
   const classes = useStyles();
 
-  return <div className={classes.COMPONENT_NAME}>{t(componentName)}</div>;
+  return <div className={classes.root}>{t(componentName)}</div>;
 };
 
 COMPONENT_NAME.propTypes = propTypes;
