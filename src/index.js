@@ -15,7 +15,6 @@ const {
   resolveClassesName,
 } = require("./helpers");
 const {
-  requireOptional,
   mkDirPromise,
   readFilePromiseRelative,
   writeFilePromise,
