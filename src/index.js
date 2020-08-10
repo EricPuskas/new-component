@@ -10,13 +10,15 @@ const {
   logIntro,
   logItemCompletion,
   logConclusion,
-  logError
+  logError,
+  resolveLanguageName,
+  resolveClassesName,
 } = require("./helpers");
 const {
   requireOptional,
   mkDirPromise,
   readFilePromiseRelative,
-  writeFilePromise
+  writeFilePromise,
 } = require("./utils");
 
 // Load our package.json, so that we can pass the version onto `commander`.
@@ -38,18 +40,25 @@ program
     'Path to the "components" directory (default: "src/components")',
     config.dir
   )
+  .option(
+    "-l, --lang <languageName>",
+    'Language file name (default: "en-en)"',
+    config.lang
+  )
   .parse(process.argv);
 
 const [componentName] = program.args;
+
+const lang = program.lang;
 
 // Templates
 const templateComponentPath = "./templates/component.js";
 const templateStoryPath = "./templates/component.stories.js";
 const templateDocPath = "./templates/component.md";
 const templateTestPath = "./templates/component.test.js";
-const templateIndexPath = "./templates/index.js";
-const templateLangEnRo = "./templates/component.lang.en-ro.js";
 const templateStylesPath = "./templates/component.styles.js";
+const templateIndexPath = "./templates/index.js";
+const templateLangEnEn = "./templates/component.lang.en-en.js";
 
 // Target files
 const componentDir = `${program.dir}/${componentName}`;
@@ -57,9 +66,9 @@ const componentPath = `${componentDir}/${componentName}.js`;
 const storyPath = `${componentDir}/${componentName}.stories.js`;
 const docPath = `${componentDir}/${componentName}.md`;
 const testPath = `${componentDir}/${componentName}.test.js`;
-const indexPath = `${componentDir}/index.js`;
-const langEnRoPath = `${componentDir}/${componentName}.lang.en-ro.js`;
 const stylesPath = `${componentDir}/${componentName}.styles.js`;
+const indexPath = `${componentDir}/index.js`;
+const langCustomPath = `${componentDir}/${componentName}.lang.${lang}.js`;
 
 // Logging ...
 logIntro({ name: componentName, dir: componentDir });
@@ -93,105 +102,110 @@ if (fs.existsSync(fullPathToComponentDir)) {
 // Create the files one by one
 mkDirPromise(componentDir)
   .then(() => readFilePromiseRelative(templateComponentPath))
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Directory created.");
     return template;
   })
-  .then(template =>
+  .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
-    template.replace(/COMPONENT_NAME/g, componentName)
+    template
+      .replace(/COMPONENT_NAME/g, componentName)
+      .replace(/component_name/g, resolveClassesName(componentName))
+      .replace(/LANG-LANG/g, lang)
+      .replace(/LANG_LANG/g, lang.replace(/-/g, "_"))
+      .replace(/lang-LANG/g, resolveLanguageName(lang))
   )
-  .then(template =>
+  .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(componentPath, prettify(template))
   )
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Component created.");
     return template;
   })
   .then(() => readFilePromiseRelative(templateStoryPath))
-  .then(template =>
+  .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
     template.replace(/COMPONENT_NAME/g, componentName)
   )
-  .then(template =>
+  .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(storyPath, prettify(template))
   )
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Story created.");
     return template;
   })
   .then(() => readFilePromiseRelative(templateDocPath))
-  .then(template =>
+  .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
     template.replace(/COMPONENT_NAME/g, componentName)
   )
-  .then(template =>
+  .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(docPath, template)
   )
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Doc created.");
     return template;
   })
   .then(() => readFilePromiseRelative(templateTestPath))
-  .then(template =>
+  .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
     template.replace(/COMPONENT_NAME/g, componentName)
   )
-  .then(template =>
+  .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(testPath, prettify(template))
   )
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Test created.");
     return template;
   })
-  .then(() => readFilePromiseRelative(templateIndexPath))
-  .then(template =>
-    // Replace our placeholders with real data (so far, just the component name)
-    template.replace(/COMPONENT_NAME/g, componentName)
-  )
-  .then(template =>
-    // Format it using prettier, to ensure style consistency, and write to file.
-    writeFilePromise(indexPath, prettify(template))
-  )
-  .then(template => {
-    logItemCompletion("Index created.");
-    return template;
-  })
-  .then(() => readFilePromiseRelative(templateLangEnRo))
-  .then(template =>
-    // Replace our placeholders with real data (so far, just the component name)
-    template.replace(/COMPONENT_NAME/g, componentName)
-  )
-  .then(template =>
-    // Format it using prettier, to ensure style consistency, and write to file.
-    writeFilePromise(langEnRoPath, prettify(template))
-  )
-  .then(template => {
-    logItemCompletion("Lang en-ro created.");
-    return template;
-  })
-
   .then(() => readFilePromiseRelative(templateStylesPath))
-  .then(template =>
+  .then((template) =>
     // Replace our placeholders with real data (so far, just the component name)
     template.replace(/COMPONENT_NAME/g, componentName)
   )
-  .then(template =>
+  .then((template) =>
     // Format it using prettier, to ensure style consistency, and write to file.
     writeFilePromise(stylesPath, prettify(template))
   )
-  .then(template => {
+  .then((template) => {
     logItemCompletion("Styles created.");
     return template;
   })
-
-  .then(template => {
+  .then(() => readFilePromiseRelative(templateIndexPath))
+  .then((template) =>
+    // Replace our placeholders with real data (so far, just the component name)
+    template.replace(/COMPONENT_NAME/g, componentName)
+  )
+  .then((template) =>
+    // Format it using prettier, to ensure style consistency, and write to file.
+    writeFilePromise(indexPath, prettify(template))
+  )
+  .then((template) => {
+    logItemCompletion("Index created.");
+    return template;
+  })
+  .then(() => readFilePromiseRelative(templateLangEnEn))
+  .then((template) =>
+    // Replace our placeholders with real data (so far, just the component name)
+    template
+      .replace(/COMPONENT_NAME/g, componentName)
+      .replace(/LANG_LANG/g, lang.replace(/-/g, "_"))
+  )
+  .then((template) =>
+    // Format it using prettier, to ensure style consistency, and write to file.
+    writeFilePromise(langCustomPath, prettify(template))
+  )
+  .then((template) => {
+    logItemCompletion(`Lang  ${lang} created.`);
+    return template;
+  })
+  .then((template) => {
     logConclusion();
   })
-  .catch(err => {
+  .catch((err) => {
     console.error(err);
   });
